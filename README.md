@@ -26,3 +26,5 @@ _Para iniciar a aplicação_
 **bcryptjs** para hash do password do usuário
 
 **YUP** para lidar com as validações das requisições HTTP
+
+**multer** para lidar com multipart/form-data
