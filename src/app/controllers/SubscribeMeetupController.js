@@ -1,6 +1,10 @@
 import * as Yup from 'yup';
 import { isAfter } from 'date-fns';
 
+import Queue from '../../lib/Queue';
+import MeetupSubscriptionMail from '../jobs/MeetupSubscriptionMail';
+
+import User from '../models/User';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscription';
 
@@ -16,7 +20,15 @@ class SubscribeMeetupController {
 
     const { meetup_id } = req.body;
 
-    const meetup = await Meetup.findByPk(meetup_id);
+    const meetup = await Meetup.findByPk(meetup_id, {
+      include: [
+        {
+          model: User,
+          as: 'promoter',
+          attributes: ['name', 'email'],
+        },
+      ],
+    });
 
     if (req.userId === meetup.promoter_id) {
       return resp.status(400).json({
@@ -55,6 +67,10 @@ class SubscribeMeetupController {
       user_id: req.userId,
       meetup_id,
     });
+
+    const user = await User.findByPk(req.userId);
+
+    Queue.add(MeetupSubscriptionMail.key, { meetup, user });
 
     return resp.json(subscriptions);
   }
