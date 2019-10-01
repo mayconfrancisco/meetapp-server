@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { isAfter } from 'date-fns';
 
 import Queue from '../../lib/Queue';
@@ -10,17 +9,9 @@ import Subscription from '../models/Subscription';
 
 class SubscribeMeetupController {
   async store(req, resp) {
-    const schema = Yup.object().shape({
-      meetup_id: Yup.number().required(),
-    });
+    const { meetupId } = req.params;
 
-    if (!(await schema.isValid(req.body))) {
-      return resp.status(400).json({ error: 'Validations fails' });
-    }
-
-    const { meetup_id } = req.body;
-
-    const meetup = await Meetup.findByPk(meetup_id, {
+    const meetup = await Meetup.findByPk(meetupId, {
       include: [
         {
           model: User,
@@ -65,7 +56,7 @@ class SubscribeMeetupController {
 
     const subscriptions = await Subscription.create({
       user_id: req.userId,
-      meetup_id,
+      meetup_id: meetupId,
     });
 
     const user = await User.findByPk(req.userId);
