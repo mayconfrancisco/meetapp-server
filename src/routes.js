@@ -7,6 +7,7 @@ import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import MeetupController from './app/controllers/MeetupController';
 import SubscribeMeetupController from './app/controllers/SubscribeMeetupController';
+import OrganizingController from './app/controllers/OrganizingController';
 
 import multerConfig from './config/multer';
 
@@ -29,6 +30,8 @@ routes.post(
   '/meetups/:meetupId/subscriptions',
   SubscribeMeetupController.store
 );
+
+routes.get('/organizing', OrganizingController.index);
 
 routes.post('/files', upload.single('file'), FileController.store);
 

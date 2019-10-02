@@ -1,7 +1,9 @@
 import * as Yup from 'yup';
-import { isBefore, parseISO, isAfter } from 'date-fns';
+import { isBefore, parseISO, isAfter, startOfDay, endOfDay } from 'date-fns';
+import { Op } from 'sequelize';
 
 import Meetup from '../models/Meetup';
+import User from '../models/User';
 
 class MeetupController {
   /**
@@ -91,9 +93,26 @@ class MeetupController {
    *
    */
   async index(req, resp) {
-    // Retorna todos - inclusive os passados
+    const { date, page } = req.query;
+    const where = {};
+
+    if (date) {
+      const dateFilter = parseISO(date);
+      where.date = {
+        [Op.between]: [startOfDay(dateFilter), endOfDay(dateFilter)],
+      };
+    }
+
     const meetups = await Meetup.findAll({
-      where: { promoter_id: req.userId },
+      limit: 10,
+      offset: ((page || 1) - 1) * 10,
+      where,
+      include: [
+        {
+          model: User,
+          as: 'promoter',
+        },
+      ],
     });
 
     return resp.json(meetups);
