@@ -1,5 +1,5 @@
 # MeetApp Server
-Agregador de eventos para desenvolvedores - PROJETO EM DESENVOLVIMENTO
+Agregador de eventos para desenvolvedores
 
 
 ### Para rodar o projeto:
