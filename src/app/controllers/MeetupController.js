@@ -94,6 +94,7 @@ class MeetupController {
    */
   async index(req, resp) {
     const { date, page } = req.query;
+    const { meetupId } = req.params;
     const where = {};
 
     if (date) {
@@ -101,6 +102,10 @@ class MeetupController {
       where.date = {
         [Op.between]: [startOfDay(dateFilter), endOfDay(dateFilter)],
       };
+    }
+
+    if (meetupId) {
+      where.id = meetupId;
     }
 
     const meetups = await Meetup.findAll({
