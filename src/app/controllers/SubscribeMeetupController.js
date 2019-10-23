@@ -27,6 +27,11 @@ class SubscribeMeetupController {
               as: 'banner',
               attributes: ['url', 'path'],
             },
+            {
+              model: User,
+              as: 'promoter',
+              attributes: ['name'],
+            },
           ],
         },
       ],
