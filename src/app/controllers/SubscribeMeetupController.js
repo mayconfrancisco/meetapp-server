@@ -7,6 +7,7 @@ import MeetupSubscriptionMail from '../jobs/MeetupSubscriptionMail';
 import User from '../models/User';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscription';
+import File from '../models/File';
 
 class SubscribeMeetupController {
   async index(req, resp) {
@@ -20,6 +21,13 @@ class SubscribeMeetupController {
               [Op.gt]: new Date(),
             },
           },
+          include: [
+            {
+              model: File,
+              as: 'banner',
+              attributes: ['url', 'path'],
+            },
+          ],
         },
       ],
       order: [[Meetup, 'date']],
