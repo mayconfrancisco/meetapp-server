@@ -10,6 +10,11 @@ import Subscription from '../models/Subscription';
 import File from '../models/File';
 
 class SubscribeMeetupController {
+  /**
+   *
+   * Index subscribe
+   *
+   */
   async index(req, resp) {
     const subscriptions = await Subscription.findAll({
       where: { user_id: req.userId },
@@ -41,6 +46,11 @@ class SubscribeMeetupController {
     return resp.json(subscriptions);
   }
 
+  /**
+   *
+   * Store Subscribe
+   *
+   */
   async store(req, resp) {
     const { meetupId } = req.params;
 
@@ -56,7 +66,7 @@ class SubscribeMeetupController {
 
     if (req.userId === meetup.promoter_id) {
       return resp.status(400).json({
-        erro: 'You cannot sign up for a meeting where you are the organizer.',
+        error: 'You cannot sign up for a meeting where you are the organizer.',
       });
     }
 
@@ -84,7 +94,7 @@ class SubscribeMeetupController {
     if (checkDateSub) {
       return resp
         .status(400)
-        .json({ erro: "Can't subscribe to two meetups at the same time" });
+        .json({ error: "Can't subscribe to two meetups at the same time" });
     }
 
     const subscriptions = await Subscription.create({
@@ -97,6 +107,26 @@ class SubscribeMeetupController {
     Queue.add(MeetupSubscriptionMail.key, { meetup, user });
 
     return resp.json(subscriptions);
+  }
+
+  /**
+   *
+   * Delete Subscribe
+   *
+   */
+  async delete(req, resp) {
+    const { subscribeId } = req.params;
+
+    const subscription = await Subscription.findByPk(subscribeId, {
+      where: { user_id: req.userId },
+    });
+
+    if (!subscription) {
+      return resp.status(400).json({ error: "We didn't find the inscription" });
+    }
+
+    await subscription.destroy();
+    return resp.json({});
   }
 }
 
