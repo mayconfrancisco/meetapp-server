@@ -36,3 +36,9 @@ _Para iniciar a aplicação_
 **nodemailer + handlerbars** para envio de e-mails
 
 **bee-queue** para lidar com filas - envio de emails
+
+
+
+__Você pode se interessar pelos clientes Web e Mobile:__ <br />
+_[MeetApp Mobile](https://github.com/mayconfrancisco/meetapp-mobile) versão móvel (Android/iOS - ReactNative) do MeetApp_<br />
+_[MeetApp Web](https://github.com/mayconfrancisco/meetapp-web) versão web (ReactJS) do MeetApp_
