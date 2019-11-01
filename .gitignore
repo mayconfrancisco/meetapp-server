@@ -4,6 +4,8 @@ node_modules
 
 /tmp/uploads/*.jpg
 
+/dist
+
 logs
 *.log
 npm-debug.log*
