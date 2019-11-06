@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { isBefore, parseISO, isAfter, startOfDay, endOfDay } from 'date-fns';
 import { Op } from 'sequelize';
 
@@ -9,21 +8,8 @@ import File from '../models/File';
 class MeetupController {
   /**
    * Add Meetup
-   *
    */
   async store(req, resp) {
-    const schema = Yup.object().shape({
-      title: Yup.string().required(),
-      description: Yup.string().required(),
-      location: Yup.string().required(),
-      date: Yup.date().required(),
-      banner_id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return resp.status(400).json({ error: 'Validation fails' });
-    }
-
     const { date, title, description, location, banner_id } = req.body;
     const dateMeetup = parseISO(date);
 
@@ -48,20 +34,6 @@ class MeetupController {
    *
    */
   async update(req, resp) {
-    const schema = Yup.object().shape({
-      title: Yup.string(),
-      description: Yup.string(),
-      location: Yup.string(),
-      date: Yup.date(),
-      banner_id: Yup.number(),
-      promoter_id: Yup.number(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return resp.status(400).json({ error: 'Validation fails' });
-    }
-
-    // TODO - Como validar os params e os queryparams?
     const { meetupId } = req.params;
     const meetup = await Meetup.findByPk(meetupId);
 
