@@ -9,22 +9,28 @@ import MeetupController from './app/controllers/MeetupController';
 import SubscribeMeetupController from './app/controllers/SubscribeMeetupController';
 import OrganizingController from './app/controllers/OrganizingController';
 
+import validateMeetupStore from './app/validators/MeetupStore';
+import validateMeetupUpdate from './app/validators/MeetupUpdate';
+import validateSessionStore from './app/validators/SessionStore';
+import validateUserStore from './app/validators/UserStore';
+import validateUserUpdate from './app/validators/UserUpdate';
+
 import multerConfig from './config/multer';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.post('/users', UserController.store);
-routes.post('/sessions', SessionController.store);
+routes.post('/users', validateUserStore, UserController.store);
+routes.post('/sessions', validateSessionStore, SessionController.store);
 
 routes.use(authMiddleware);
 
-routes.put('/users', UserController.update);
+routes.put('/users', validateUserUpdate, UserController.update);
 
 routes.get('/meetups/:meetupId', MeetupController.index);
 routes.get('/meetups', MeetupController.index);
-routes.post('/meetups', MeetupController.store);
-routes.put('/meetups/:meetupId', MeetupController.update);
+routes.post('/meetups', validateMeetupStore, MeetupController.store);
+routes.put('/meetups/:meetupId', validateMeetupUpdate, MeetupController.update);
 routes.delete('/meetups/:meetupId', MeetupController.delete);
 
 routes.post('/meetups/:meetupId/subscribe', SubscribeMeetupController.store);
