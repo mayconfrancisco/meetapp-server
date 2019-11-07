@@ -5,6 +5,8 @@ import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
 
+import Cache from '../../lib/Cache';
+
 class MeetupController {
   /**
    * Add Meetup
@@ -25,6 +27,8 @@ class MeetupController {
       banner_id,
       promoter_id: req.userId,
     });
+
+    await Cache.invalidatePrefix('meetups');
 
     return resp.json(meetup);
   }
@@ -66,24 +70,32 @@ class MeetupController {
    *
    */
   async index(req, resp) {
-    const { date, page } = req.query;
+    const { date, page = 1 } = req.query;
     const { meetupId } = req.params;
     const where = {};
+    let cacheKey = `meetups:page:${page}`;
 
     if (date) {
       const dateFilter = parseISO(date);
       where.date = {
         [Op.between]: [startOfDay(dateFilter), endOfDay(dateFilter)],
       };
+      cacheKey += `:date:${dateFilter.getTime}`;
     }
 
     if (meetupId) {
       where.id = meetupId;
+      cacheKey += `:meetupId:${meetupId}`;
+    }
+
+    const cached = await Cache.get(cacheKey);
+    if (cached) {
+      return resp.json(cached);
     }
 
     const meetups = await Meetup.findAll({
       limit: 10,
-      offset: ((page || 1) - 1) * 10,
+      offset: (page - 1) * 10,
       where,
       include: [
         {
@@ -97,6 +109,8 @@ class MeetupController {
         },
       ],
     });
+
+    await Cache.set(cacheKey, meetups);
 
     return resp.json(meetups);
   }
