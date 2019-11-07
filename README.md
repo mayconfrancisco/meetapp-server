@@ -37,6 +37,8 @@ _Para iniciar a aplicação_
 
 **bee-queue** para lidar com filas - envio de emails
 
+**ioredis** para lidar com Redis e realizar _cache_ para algumas consultas na base de dados
+
 
 
 __Você pode se interessar pelos clientes Web e Mobile:__ <br />
